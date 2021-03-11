@@ -1,0 +1,263 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>多线程(三) volatile原理分析 | zeofuns</title><meta name="author" content="zerofuns"><meta name="copyright" content="zerofuns"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="案例分析 案例1 12345678910111213141516171819202122232425262728293031public class VolatileDemo &amp;#123;     private  static  Boolean flag &#x3D; false;      public static void main(String[] args) throws Interrupted">
+<meta property="og:type" content="article">
+<meta property="og:title" content="多线程(三) volatile原理分析">
+<meta property="og:url" content="http://example.com/2019/10/08/thread/%E5%A4%9A%E7%BA%BF%E7%A8%8B(%E4%B8%89)%20volatile%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="zeofuns">
+<meta property="og:description" content="案例分析 案例1 12345678910111213141516171819202122232425262728293031public class VolatileDemo &amp;#123;     private  static  Boolean flag &#x3D; false;      public static void main(String[] args) throws Interrupted">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2019-10-08T00:00:00.000Z">
+<meta property="article:modified_time" content="2021-03-11T12:24:07.619Z">
+<meta property="article:author" content="zerofuns">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2019/10/08/thread/%E5%A4%9A%E7%BA%BF%E7%A8%8B(%E4%B8%89)%20volatile%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-03-11 20:24:07'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    })(window)</script><meta name="generator" content="Hexo 5.2.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="/images/cover/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">29</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">zeofuns</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">多线程(三) volatile原理分析</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2019-10-08T00:00:00.000Z" title="发表于 2019-10-08 08:00:00">2019-10-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-03-11T12:24:07.619Z" title="更新于 2021-03-11 20:24:07">2021-03-11</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="案例分析"><a href="#案例分析" class="headerlink" title="案例分析"></a>案例分析</h1><ul>
+<li><p>案例1</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">VolatileDemo</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">private</span>  <span class="keyword">static</span>  Boolean flag = <span class="keyword">false</span>;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line"> </span><br><span class="line">        Thread threadA = <span class="keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line">            <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span> (flag) &#123;</span><br><span class="line">                    System.out.println(<span class="string">&quot;线程：&quot;</span> + Thread.currentThread().getName());</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;, <span class="string">&quot;threadA&quot;</span>);</span><br><span class="line">        threadA.start();</span><br><span class="line"> </span><br><span class="line">       Thread.sleep(<span class="number">1000</span></span><br><span class="line">       );</span><br><span class="line"> </span><br><span class="line">        Thread threadB = <span class="keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;线程：&quot;</span> + Thread.currentThread().getName());</span><br><span class="line">            flag = <span class="keyword">true</span>;</span><br><span class="line">        &#125;, <span class="string">&quot;ThreadB&quot;</span>);</span><br><span class="line">        threadB.start();</span><br><span class="line"> </span><br><span class="line">        threadA.join();</span><br><span class="line">        threadB.join();</span><br><span class="line"> </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出结果：</p>
+<p><img src="/images/image-20210311201127571.png" alt="image-20210311201127571"></p>
+<p>我们启动了2个线程，并保证线程A能够先执行，结果发现在线程B中修改了flag的值并没有体现在线程A中，说明线程A中还是拿的flag之前的值，这样是有问题的。我们修改代码，给flag变量加上volatile关键字</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"> */</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">VolatileDemo</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">static</span>  Boolean flag = <span class="keyword">false</span>;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line"> </span><br><span class="line">        Thread threadA = <span class="keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line">            <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span> (flag) &#123;</span><br><span class="line">                    System.out.println(<span class="string">&quot;线程：&quot;</span> + Thread.currentThread().getName());</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;, <span class="string">&quot;threadA&quot;</span>);</span><br><span class="line">        threadA.start();</span><br><span class="line"> </span><br><span class="line">       Thread.sleep(<span class="number">1000</span></span><br><span class="line">       );</span><br><span class="line"> </span><br><span class="line">        Thread threadB = <span class="keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;线程：&quot;</span> + Thread.currentThread().getName());</span><br><span class="line">            flag = <span class="keyword">true</span>;</span><br><span class="line">        &#125;, <span class="string">&quot;ThreadB&quot;</span>);</span><br><span class="line">        threadB.start();</span><br><span class="line"> </span><br><span class="line">        threadA.join();</span><br><span class="line">        threadB.join();</span><br><span class="line"> </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出结果：</p>
+<p><img src="/images/image-20210311201202699.png" alt="image-20210311201202699"></p>
+<p>结果能够正常执行了，加了关键字votile关键字保证了变量在多线程的情况的可见性，一个线程对线程的修改，强制写入到另一个线程中。</p>
+</li>
+<li><p>案例2</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">VolatileDemo</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span>  <span class="keyword">int</span> i = <span class="number">0</span> ;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span>  <span class="keyword">void</span> <span class="title">increment</span><span class="params">()</span></span>&#123;</span><br><span class="line">        i++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">            <span class="keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">1000</span>; j++) &#123;</span><br><span class="line">                    increment();</span><br><span class="line">                &#125;</span><br><span class="line"> </span><br><span class="line">            &#125;).start();</span><br><span class="line">        &#125;</span><br><span class="line">        Thread.sleep(<span class="number">2000</span>);</span><br><span class="line">        System.out.println(i);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出结果：</p>
+<p><img src="/images/image-20210311201304405.png" alt="image-20210311201304405"></p>
+<p>上述代码中，我们启动了10个线程，每个线程进行1000次自增1操作，正常结果应该是输出10000，但是实际情况输出结果并不是如此，那么我们加上volatile关键字测试下</p>
+<p>输出结果：</p>
+<p><img src="/images/image-20210311201336472.png" alt="image-20210311201336472"></p>
+<p>我们发现加了volatile关键字之后，还是没有正常打印出结果，不是说volatile能保证可见性吗，怎么结果确不尽人意呢。</p>
+<p>我们接着测试。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">VolatileDemo3</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">static</span> AtomicInteger num = <span class="keyword">new</span> AtomicInteger(<span class="number">0</span>) ;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">            <span class="keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">1000</span>; j++) &#123;</span><br><span class="line">                    num.getAndIncrement();</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">//System.out.println(&quot;11111&quot;);</span></span><br><span class="line"> </span><br><span class="line">            &#125;).start();</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        Thread.sleep(<span class="number">2000</span>);</span><br><span class="line">        System.out.println(num.get());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出结果</p>
+<p><img src="/images/image-20210311201406874.png" alt="image-20210311201406874"></p>
+<p>可以发现当我们把进行自增操作的变量改成了Atomic原子操作自增时，程序时能正常运行的。</p>
+<p>结论：</p>
+<p><strong>volatile关键字能够保证可见性，不能保证原子性。</strong></p>
+</li>
+</ul>
+<h1 id="volatile关键字原理分析"><a href="#volatile关键字原理分析" class="headerlink" title="volatile关键字原理分析"></a>volatile关键字原理分析</h1><ol>
+<li><p>硬件层面</p>
+<p>计算机最重要的组成部分是CPU、内存、IO设备，而这3者处理数据的速度是很大差别的。3者的速度排名为CPU&gt;内存&gt;IO设备。为了解决速度的差异，更好的利用cpu资源，从硬件、操作系统、编译器上面做了很多的优化</p>
+<p>CPU增加高速缓存<br>操作系统增加进程，线程，通过CPU的时间片切换最大化的提高CPU的使用率<br>编译器的指令优化，更合理的利用好CPU的高速缓存<br>这些优化也使得我们在使用多线程的时候会带来一些线程不安全的情况。</p>
+<p>cpu高速缓存的模型如下图所示：</p>
+<p><img src="/images/20191008141629638.png" alt="20191008141629638"></p>
+<p>cpu中有3个高速缓存，L1、L2、L3这3个缓存随着和cpu核心的距离变大而速率变慢，L1&gt;L2&gt;L3。</p>
+<p>当cpu在处理数据的时候，会把内存中的数据拷贝一份到高速缓存中，当同时有多个cpu处理同一份数据的时候就会出现缓存不一致问题。</p>
+<p>为了解决缓存不一致问题，cpu做了以下处理。</p>
+<ul>
+<li>总线锁</li>
+<li>缓存锁</li>
+</ul>
+<p>总线锁：简单来说，就是在多cpu下，当一个处理器要对共享内存进行操作的时候，在总线上发出一个LOCK信号，这个信号使得其他处理器无法经过总线来访问到共享内存中的数据。总线锁定把cpu和内存之间的通信锁住了，这就使得锁定期间，其他处理器不能操作其他内存地址的数据，所以总线锁的粒度太大，开销太大，并不可取。</p>
+<p>缓存锁：为了减少锁的粒度，我们只需要保证当多个cpu缓存同一份数据是一致的就行，所以增加了缓存锁，它的核心机制是基于缓存一致性协议来实现的。</p>
+<p>缓存一致性协议：为了达到数据的一致性，需要在各个处理器里面在访问缓存的时候遵循一些协议，在读写的时候根据协议来进行操作，常见的协议有MSI，MESI，MOSI等，最常见的就是MESI协议。</p>
+<p>MESI协议</p>
+<p>MESI表示缓存行的四种状态，分别是</p>
+<ul>
+<li>M（modify）表示共享内存只缓存在当前cpu中，并且是被修改状态，也就是缓存的数据和主内存之中的数据不一致。</li>
+<li>E（exclusive）表示缓存的独占状态，数据只缓存在当前cpu中，并且没有修改。</li>
+<li>S（Shred）表示数据可能被多个cpu缓存，并且各个缓存中的数据和主内存数据一致。</li>
+<li>I（invalid）表示缓存已经失效。</li>
+</ul>
+<p>对于MESI协议，cpu操作数据时遵循以下原则：</p>
+<p>cpu读请求：缓存处于M、E、S状态下都可以被读取，I状态cpu只能从主存中获取数据。<br>cpu写请求：缓存处于M、E状态下才可以被写，对于S状态下的写，需要其他cpu缓存设置成I才可以写。<br>使用总线锁或者存储锁的机制之后，cpu对于内存的操作大致可以抽象成下面的结构：</p>
+<p><img src="/images/image-20210311201741443.png" alt="image-20210311201741443"></p>
+<p>MESI带来的可见性问题</p>
+<p>MESI协议虽然能够实现缓存的一致性，但是还是会存在一些问题的</p>
+<p>各个cpu缓存的状态变更是通过消息传递来进行的，如果cpu0要对一个缓存中的共享变量进行写入，首先要发送一个失效的消息给其他缓存了该数据的额cpu，并且要等到他们的确认回执。cpu0在这段时间都会处于阻塞状态。为了避免阻塞带来的资源浪费，在cpu中引入了StoreBuffer</p>
+<p><img src="/images/image-20210311201822886.png" alt="image-20210311201822886"></p>
+<p>cpu0在写入共享数据时，直接把数据写入到StoreBufferes中，同时发送invalidate消息，然后继续去处理其他指令。当收到其他cpu发送的ack确认消息时，再将StoreBufferes中的数据存储到cache line中，最后再从缓存行同步到主内存。</p>
+<p><img src="/images/20191008155933261.png" alt="20191008155933261"></p>
+<p>但是这种优化又会带来存在下面2个问题</p>
+<ul>
+<li>数据什么时候提交是不确定的，因为需要等待其他cpu给回复才会数据同步，这其实是一个异步操作。</li>
+<li>引入了storeBufferes后，处理器会先尝试从storebuffer中读取数据，如果有就直接去，没有再到缓存行中读取。</li>
+</ul>
+<p>而由于将变更的数据写入到storeBuffer中，cpu0继续往下执行，那么会出现cpu0接下来的执行指令对其他cpu的程序执行产生错误的结果，所以硬件方面在cpu上提出了内存屏障来保证程序的程序的正常执行</p>
+</li>
+</ol>
+<p>   cpu层面的内存屏障</p>
+<p>   内存屏障由于编译器优化或者cpu乱序，导致内存的访问顺序和程序中的逻辑顺序不一致的问题，需要增加内存屏障来保证一些有前后顺序的代码正常运行。</p>
+<ul>
+<li><p>Store Memory Barrier（写屏障）告诉处理器在写屏障之前的所有已经存储在存储缓存（store bufferes）中的数据同步到主内存</p>
+</li>
+<li><p>Load Memory Barrier（读屏障）告诉处理器在读屏障之后的读操作都在读屏障之后执行。可以让高速缓存中的缓存失效，强制从主内存中获取数据</p>
+</li>
+<li><p>Full Memory Barrier（全屏障）确保屏障前的内存读写操作的结果提交到内存之后，再执行屏障之后的读写操作。</p>
+<p>通过写屏障和读屏障来强制刷新内存保证程序的正常执行。</p>
+</li>
+</ul>
+<ol start="2">
+<li><p>JMM层次</p>
+<p>JMM：Java Memory Model，Java内存模型</p>
+<p>JMM中的内存模型和cpu中的模型非常相似</p>
+<p>主存：jmm中的堆，创建的对象都保存在堆中。</p>
+<p>栈：每一个线程对应一个栈，运行过程中会把堆中的内存拷贝一份数据到栈中。</p>
+</li>
+</ol>
+<p>   通过前面的分析，导致可见性的根本问题是缓存和重排序，而JMM就是提供了合理的禁用缓存以及禁止重排序的方法。它最核心的价值是解决可见性和有序性。</p>
+<p>   JMM属于语言级别的抽象内存模型，它让java开发者不用考虑各种操作系统的cpu指令差异，只要满足JMM定义的多线程程序读写操作的行为规范，就能写出跨平台差异的代码。</p>
+<p>   简单来说，就是JMM通过自己定义的内存屏障来禁止重排序，程序在运行的时候会将这些内存屏障转换成具体的cpu指令。<br>   <img src="/images/image-20210311202304866.png" alt="image-20210311202304866"></p>
+<p>   JMM提供了一些禁用缓存和禁止重排序的方法，来解决可见性和有序性问题，例如：volatile，synchronized，final等</p>
+<p>   对于上述的一些指令，程序在执行的时候会添加对应的内存屏障来保证程序正常运行。</p>
+<p>   JMM中的内存屏障</p>
+<ul>
+<li><p>LoadLoad屏障：指令实例 load1；loadload；load2；确保load1数据的装载优于load2及之后的所有指令</p>
+</li>
+<li><p>StoreStore屏障：指令实例store1；StoreStore；Store；确认store1数据对其他处理器可见优先于store2及后续存储指令的存储</p>
+</li>
+<li><p>LoadStore屏障：指令实例Load1；LoadStore；Store；确保load1数据的装载优于Store2以及后续的指令刷新到缓存</p>
+</li>
+<li><p>StoreLoad屏障：指令实例Store；StoreLoad；Load；确认store1数据对其他处理器可见优先于Load2以及后续指令的装载</p>
+<p>HappenBefore</p>
+<p>它的意思是前一个操作对于后续操作是可见的，所以它是一种表达多线程之间对于内存的可见性。所以如果我们说一个操作对于另一个操作可见，那么这两个操作必须存在HappenBefore关系。</p>
+</li>
+<li><p>程序顺序规则：可以简单认为是as-if-serial。单个线程中的代码顺序不管怎么变，对于结果来说是不变的。</p>
+</li>
+<li><p>volatile规则：对于volatile修饰的变量的写操作一定Happen-before后续对变量的读取操作</p>
+</li>
+<li><p>传递性规则：1 Happen-before 2 ，2 Happen-before 3，所以 1 Happen-before 3</p>
+</li>
+<li><p>start规则：调用线程start方法的线程执行start方法一定优先与run方法中实现的逻辑</p>
+</li>
+<li><p>join规则：ThradA执行ThradB的join方法，那么ThradB中的任意操作都要优先与ThradA执行ThreadB.join方法。</p>
+</li>
+<li><p>监视器规则：对于一个锁的解锁，一定在加锁之后。</p>
+</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">zerofuns</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2019/10/08/thread/%E5%A4%9A%E7%BA%BF%E7%A8%8B(%E4%B8%89)%20volatile%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/">http://example.com/2019/10/08/thread/%E5%A4%9A%E7%BA%BF%E7%A8%8B(%E4%B8%89)%20volatile%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">zeofuns</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2020/05/14/jdk/%E9%9B%86%E5%90%88%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-List/"><img class="prev-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">集合源码分析-List</div></div></a></div><div class="next-post pull-right"><a href="/2019/09/28/thread/%E5%A4%9A%E7%BA%BF%E7%A8%8B(%E4%BA%8C)%20synchronized%E5%88%86%E6%9E%90/"><img class="next-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">多线程(二) synchronized分析</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="/images/cover/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">zerofuns</div><div class="author-info__description">xxxxx</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">29</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/zero-fun"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">每一个昨天的自己，才是我们今天最大的靠山</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B%E5%88%86%E6%9E%90"><span class="toc-number">1.</span> <span class="toc-text">案例分析</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#volatile%E5%85%B3%E9%94%AE%E5%AD%97%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90"><span class="toc-number">2.</span> <span class="toc-text">volatile关键字原理分析</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2020/12/02/redis/Redis%E5%BA%95%E5%B1%82%E5%AD%A6%E4%B9%A0-Sentinel%E5%AE%9E%E7%8E%B0%E9%AB%98%E5%8F%AF%E7%94%A8/" title="Redis底层学习-Sentinel实现高可用">Redis底层学习-Sentinel实现高可用</a><time datetime="2020-12-02T00:00:00.000Z" title="发表于 2020-12-02 08:00:00">2020-12-02</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2020/11/27/redis/Redis%E5%BA%95%E5%B1%82%E5%AD%A6%E4%B9%A0-%E4%BA%8B%E5%8A%A1/" title="Redis底层学习-事务">Redis底层学习-事务</a><time datetime="2020-11-27T00:00:00.000Z" title="发表于 2020-11-27 08:00:00">2020-11-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2020/11/24/redis/Redis%E5%BA%95%E5%B1%82%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E6%9C%BA%E6%95%B0%E6%8D%AE%E5%BA%93/" title="Redis底层学习-多机数据库">Redis底层学习-多机数据库</a><time datetime="2020-11-24T00:00:00.000Z" title="发表于 2020-11-24 08:00:00">2020-11-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2020/11/16/redis/Redis%E5%BA%95%E5%B1%82%E5%AD%A6%E4%B9%A0-%E9%9B%86%E7%BE%A4%E6%A8%A1%E5%BC%8F/" title="Redis底层学习-集群模式">Redis底层学习-集群模式</a><time datetime="2020-11-16T00:00:00.000Z" title="发表于 2020-11-16 08:00:00">2020-11-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2020/11/08/redis/Redis%E5%BA%95%E5%B1%82%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E8%B1%A1/" title="Redis底层学习-对象">Redis底层学习-对象</a><time datetime="2020-11-08T00:00:00.000Z" title="发表于 2020-11-08 08:00:00">2020-11-08</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By zerofuns</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
