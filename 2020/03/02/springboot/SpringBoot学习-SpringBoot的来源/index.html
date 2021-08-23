@@ -1,0 +1,162 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Springboot-SpringBoot的来源 | zeofuns</title><meta name="author" content="zerofuns"><meta name="copyright" content="zerofuns"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="SpringBoot 的来源Spring 的发展历史Spring1.X由于 EJB 和 Java EE 开发的繁琐、低效，Spring 在探索革新中开发出来。 Spring 1.x 版本提供了核心的 IOC 和 AOP 功能。此时 Java 的 1.5 还没有出来，没有注解功能。Spring 的所有配置都在 xml 文件中。 Spring2.x随着 Java1.5 的出现，Spring 提供了一些">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Springboot-SpringBoot的来源">
+<meta property="og:url" content="http://example.com/2020/03/02/springboot/SpringBoot%E5%AD%A6%E4%B9%A0-SpringBoot%E7%9A%84%E6%9D%A5%E6%BA%90/index.html">
+<meta property="og:site_name" content="zeofuns">
+<meta property="og:description" content="SpringBoot 的来源Spring 的发展历史Spring1.X由于 EJB 和 Java EE 开发的繁琐、低效，Spring 在探索革新中开发出来。 Spring 1.x 版本提供了核心的 IOC 和 AOP 功能。此时 Java 的 1.5 还没有出来，没有注解功能。Spring 的所有配置都在 xml 文件中。 Spring2.x随着 Java1.5 的出现，Spring 提供了一些">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2020-03-01T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-08-23T02:48:45.872Z">
+<meta property="article:author" content="zerofuns">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2020/03/02/springboot/SpringBoot%E5%AD%A6%E4%B9%A0-SpringBoot%E7%9A%84%E6%9D%A5%E6%BA%90/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-08-23 10:48:45'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    })(window)</script><meta name="generator" content="Hexo 5.2.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="/images/cover/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">36</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">8</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">zeofuns</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Springboot-SpringBoot的来源</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-03-01T16:00:00.000Z" title="发表于 2020-03-02 00:00:00">2020-03-02</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-08-23T02:48:45.872Z" title="更新于 2021-08-23 10:48:45">2021-08-23</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/SpringBoot/">SpringBoot</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="SpringBoot-的来源"><a href="#SpringBoot-的来源" class="headerlink" title="SpringBoot 的来源"></a>SpringBoot 的来源</h1><h2 id="Spring-的发展历史"><a href="#Spring-的发展历史" class="headerlink" title="Spring 的发展历史"></a>Spring 的发展历史</h2><h3 id="Spring1-X"><a href="#Spring1-X" class="headerlink" title="Spring1.X"></a>Spring1.X</h3><p>由于 EJB 和 Java EE 开发的繁琐、低效，Spring 在探索革新中开发出来。</p>
+<p>Spring 1.x 版本提供了核心的 IOC 和 AOP 功能。此时 Java 的 1.5 还没有出来，没有注解功能。Spring 的所有配置都在 xml 文件中。</p>
+<h3 id="Spring2-x"><a href="#Spring2-x" class="headerlink" title="Spring2.x"></a>Spring2.x</h3><p>随着 Java1.5 的出现，Spring 提供了一些注解来实现的配置功能。如@Compoent、@Service、@Controller、@RequestMapper</p>
+<h3 id="Spring3-x"><a href="#Spring3-x" class="headerlink" title="Spring3.x"></a>Spring3.x</h3><p>注解增强，如</p>
+<p>@Configuration 去配置文件</p>
+<p>@Compoent-Scan 注解扫描</p>
+<p>@Import 引入其他配置类</p>
+<p>@Enable 模块驱动，开启某个模块</p>
+<h3 id="Spring4-x"><a href="#Spring4-x" class="headerlink" title="Spring4.x"></a>Spring4.x</h3><p>全面支持 java8：如 lambda 表达式、新的日期和 api 的支持</p>
+<p>核心容器的增强：泛型依赖注入、map 依赖注入、list 依赖注入</p>
+<p>web 容器的增强：基于 servlet3.0 开发、提供 RestController 注解</p>
+<p>WebSocket 的支持</p>
+<h3 id="Spring5-X"><a href="#Spring5-X" class="headerlink" title="Spring5.X"></a>Spring5.X</h3><p>最低要求 java8、核心容器修改、响应式编程、使用 kotlin 函数式编程</p>
+<h3 id="SpringBoot-的诞生"><a href="#SpringBoot-的诞生" class="headerlink" title="SpringBoot 的诞生"></a>SpringBoot 的诞生</h3><p>由于 Spring 在开发应用的时候的繁琐流程，往往搭建一个项目需要大半天的时间，而且还容易出现冲突问题。Springboot 应势而生。Springboot 提供了约定大于配置、Start 封装启动依赖、actuator 监控、以及自带容器的功能。类似于一个脚手架将基本的功能都进行了封装。</p>
+<h2 id="加载类的变化"><a href="#加载类的变化" class="headerlink" title="加载类的变化"></a>加载类的变化</h2><ol>
+<li>通过 xml 文件声明 bean</li>
+<li>通过在 xml 中声明 compoent-scan 指定路径+注解</li>
+<li>通过@configuration 注入 bean</li>
+<li>增加@import 注解，指定 select，加载不同的 configuration(没有注解)</li>
+<li>Springboot 中的@SpringBootApplication 中包含了@EnableAutoConfiguration，@EnableAutoConfiguration 中包含了@Import 注解，通过 AutoConfigurationImportSelector 扫描所有 jar 包路径下 spring.fatcory 下的配置类(spi 机制)。</li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">zerofuns</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2020/03/02/springboot/SpringBoot%E5%AD%A6%E4%B9%A0-SpringBoot%E7%9A%84%E6%9D%A5%E6%BA%90/">http://example.com/2020/03/02/springboot/SpringBoot%E5%AD%A6%E4%B9%A0-SpringBoot%E7%9A%84%E6%9D%A5%E6%BA%90/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">zeofuns</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2020/03/08/springboot/SpringBoot-%E8%87%AA%E5%BB%BA%E4%B8%80%E4%B8%AAstart/"><img class="prev-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Springboot-自建start</div></div></a></div><div class="next-post pull-right"><a href="/2019/09/23/Mybaties/Mybatis%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90(2)-Mybatis%20%E6%8F%92%E4%BB%B6/"><img class="next-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Mybatis源码分析(2)-Mybatis 插件</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="/images/cover/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">zerofuns</div><div class="author-info__description">当下即是彼岸</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">36</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">8</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/zero-fun"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">起风了</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#SpringBoot-%E7%9A%84%E6%9D%A5%E6%BA%90"><span class="toc-number">1.</span> <span class="toc-text">SpringBoot 的来源</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-%E7%9A%84%E5%8F%91%E5%B1%95%E5%8E%86%E5%8F%B2"><span class="toc-number">1.1.</span> <span class="toc-text">Spring 的发展历史</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Spring1-X"><span class="toc-number">1.1.1.</span> <span class="toc-text">Spring1.X</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Spring2-x"><span class="toc-number">1.1.2.</span> <span class="toc-text">Spring2.x</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Spring3-x"><span class="toc-number">1.1.3.</span> <span class="toc-text">Spring3.x</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Spring4-x"><span class="toc-number">1.1.4.</span> <span class="toc-text">Spring4.x</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Spring5-X"><span class="toc-number">1.1.5.</span> <span class="toc-text">Spring5.X</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SpringBoot-%E7%9A%84%E8%AF%9E%E7%94%9F"><span class="toc-number">1.1.6.</span> <span class="toc-text">SpringBoot 的诞生</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%A0%E8%BD%BD%E7%B1%BB%E7%9A%84%E5%8F%98%E5%8C%96"><span class="toc-number">1.2.</span> <span class="toc-text">加载类的变化</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/06/06/record/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA/" title="线程池内存溢出">线程池内存溢出</a><time datetime="2021-06-06T00:00:00.000Z" title="发表于 2021-06-06 08:00:00">2021-06-06</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/06/02/redis/Redis%E5%BA%95%E5%B1%82%E5%AD%A6%E4%B9%A0-Sentinel%E5%AE%9E%E7%8E%B0%E9%AB%98%E5%8F%AF%E7%94%A8/" title="Redis底层学习-Sentinel实现高可用">Redis底层学习-Sentinel实现高可用</a><time datetime="2021-06-02T00:00:00.000Z" title="发表于 2021-06-02 08:00:00">2021-06-02</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/05/29/redis/Redis%E5%BA%95%E5%B1%82%E5%AD%A6%E4%B9%A0-%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9B%B8%E5%85%B3/" title="Redis底层学习-数据库相关">Redis底层学习-数据库相关</a><time datetime="2021-05-29T00:00:00.000Z" title="发表于 2021-05-29 08:00:00">2021-05-29</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/05/14/record/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%85%A8%E7%9B%98%E6%89%AB%E6%8F%8F%E5%AF%BC%E8%87%B4%E7%9A%84%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA/" title="数据库全盘扫描导致的内存溢出">数据库全盘扫描导致的内存溢出</a><time datetime="2021-05-14T00:00:00.000Z" title="发表于 2021-05-14 08:00:00">2021-05-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/05/14/redis/Redis%E5%BA%95%E5%B1%82%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E6%9C%BA%E6%95%B0%E6%8D%AE%E5%BA%93/" title="Redis底层学习-多机数据库">Redis底层学习-多机数据库</a><time datetime="2021-05-14T00:00:00.000Z" title="发表于 2021-05-14 08:00:00">2021-05-14</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By zerofuns</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
